@@ -43,7 +43,7 @@ class NewShoesListProvider with ChangeNotifier {
 
   void addToCart(NewShoesListModel product,int count) {
     int index=_cartItems.indexWhere((item) => item.name==product.name);
-    if(index!=1){
+    if(index!=-1){
       _cartItems[index].quantity+=count;
     }else{
       _cartItems.add(product.copyWith(quantity: count));

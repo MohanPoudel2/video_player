@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +61,7 @@ class _CartScreenState extends State<CartScreen> {
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final selectedCart = cartItems[index];
+                    log(selectedCart.quantity.toString());
 
                     return Stack(
                       clipBehavior: Clip.none,
@@ -95,7 +98,7 @@ class _CartScreenState extends State<CartScreen> {
                                             fontSize: 20),
                                       ),
                                       Text(
-                                        '\$${selectedCart.price} * $_count = ${totalSum * _count}',
+                                        '\$${selectedCart.price} * ${selectedCart.quantity} = ${selectedCart.price*selectedCart.quantity}',
                                         style: TextStyles.smallText,
                                       ),
                                     ],
