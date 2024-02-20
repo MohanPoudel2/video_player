@@ -1,0 +1,309 @@
+import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:video_player_app/utils/text_styles.dart';
+
+import '../../provider/shoes_list_provider/shoes_list_provider.dart';
+import '../../utils/app_colors.dart';
+
+class CartScreen extends StatefulWidget {
+  const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  int _count = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    final cartProvider = context.watch<NewShoesListProvider>();
+    final cartItems = cartProvider.cartItems;
+    final totalSum =
+        cartItems.fold(0, (sum, shoe) => sum + int.parse("${shoe.price}"));
+    int charge = 10;
+    return Scaffold(
+      body: Container(
+          padding: const EdgeInsets.only(left: 10, top: 30, right: 10),
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/bg3.jpg'), fit: BoxFit.fill)),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back_ios)),
+                  TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Add more',
+                        style: TextStyles.smallText.copyWith(color: Colors.red),
+                      ))
+                ],
+              ),
+           
+              if (cartItems.isEmpty)
+                const Center(
+                  child: Text('Nothing in the Cart'),
+                ),
+              if (cartItems.isNotEmpty)
+                Expanded(
+                    child: ListView.builder(
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    final selectedCart = cartItems[index];
+
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          child: Card(
+                            elevation: 4,
+                            shape: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 10),
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image:
+                                              AssetImage(selectedCart.image))),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 40),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        selectedCart.name,
+                                        style: TextStyles.smallText.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      Text(
+                                        '\$${selectedCart.price} * $_count = ${totalSum * _count}',
+                                        style: TextStyles.smallText,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          _onDecrement();
+                                        },
+                                        icon: const Icon(
+                                          Icons.remove,
+                                          size: 16,
+                                        )),
+                                    Text(
+                                      '$_count',
+                                      style: TextStyles.tabText2
+                                          .copyWith(fontSize: 14),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          _onIncrement();
+                                        },
+                                        icon: const Icon(
+                                          Icons.add,
+                                          size: 16,
+                                        )),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                            right:-1,
+                            top: -30,
+                            child: InkWell(
+                              onTap:(){
+                                      context
+                                          .read<NewShoesListProvider>()
+                                          .removeFromCart(selectedCart);
+                              },
+                              child: Container(
+                                width: 25,
+                                height: 80,
+                                decoration:  const BoxDecoration(
+                                boxShadow:[
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius:-3,
+                                    blurRadius:10,
+                                    offset: Offset(1, 10),
+
+                                  ),
+                                ],
+                                    shape: BoxShape.circle,
+                                  color:AppColors.bottomNev,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/cross.png'),
+
+                                  )
+
+                                ),
+                              ),
+                            )),
+                      ],
+                    );
+                  },
+                )),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Items :',
+                    style: TextStyles.textButton2,
+                  ),
+                  Text(
+                    cartItems.length.toString(),
+                    style: TextStyles.textButton2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Delivery charge :',
+                    style: TextStyles.textButton2,
+                  ),
+                  Text(
+                    cartItems.isNotEmpty ? '\$$charge' : '\$0',
+                    style: TextStyles.textButton2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Sub Total :',
+                    style: TextStyles.textButton2,
+                  ),
+                  Text(
+                    '\$$totalSum',
+                    style: TextStyles.textButton2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Total :',
+                    style: TextStyles.mediumText,
+                  ),
+                  Text(
+                    cartItems.isNotEmpty ? '\$${charge + totalSum}' : '\$0',
+                    style: TextStyles.mediumText,
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  final cartProvider = context.read<NewShoesListProvider>();
+                  cartProvider.checkoutAndMoveToHistory();
+                  if (cartItems.isNotEmpty) {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return GiffyDialog.image(
+                          Image.network(
+                            "https://media1.giphy.com/media/W2oYmaE8euR7gfx4Ke/200.webp?cid=790b7611n2zl0t1ectba2q3x919mojv4ctuj2c1psba9rzeb&ep=v1_gifs_search&rid=200.webp&ct=g",
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          content: const Text(
+                            'Congratulations! Your order has been successfully placed. Thank you for choosing our service!',
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return GiffyDialog.image(
+                          Image.network(
+                            "https://media0.giphy.com/media/ISOckXUybVfQ4/200.webp?cid=790b7611y86hgui1flcw1njakl9ptp79h0sgm6y0hl7j3oq8&ep=v1_gifs_search&rid=200.webp&ct=g",
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          content: const Text(
+                            'Oops! It looks like you haven’t selected any items yet. Please add products to your cart before proceeding to checkout. Happy shopping!',
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(top: 100, bottom: 20),
+                  height: 60,
+                  width: 300,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.iconColor),
+                  child: const Center(
+                    child: Text('Check Out'),
+                  ),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  void _onIncrement() {
+    setState(() {
+      _count++;
+    });
+  }
+
+  void _onDecrement() {
+    setState(() {
+      if (_count > 1) {
+        _count--;
+      }
+    });
+  }
+}

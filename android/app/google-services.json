@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977872097687",
+    "project_id": "vidoe-player-app",
+    "storage_bucket": "vidoe-player-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977872097687:android:c013489e992cb8e54ab4d2",
+        "android_client_info": {
+          "package_name": "com.example.video_player_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_u5r0a-cvfR2GxXpSncWI1fDu6fCskYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
