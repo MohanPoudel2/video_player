@@ -7,7 +7,7 @@ import '../../reusable_widgets/new_shoes_widget.dart';
 import '../../reusable_widgets/running_shoe_list_widget.dart';
 import '../../reusable_widgets/text_form_field_widget.dart';
 import '../../utils/text_styles.dart';
-
+import 'package:badges/badges.dart' as badges;
 class ShoesScreen extends StatefulWidget {
   const ShoesScreen({super.key});
 
@@ -48,7 +48,18 @@ class _ShoesScreenState extends State<ShoesScreen> {
                             builder: (context) => const CartScreen(),
                           ));
                     },
-                    icon: const Icon(Icons.shopping_cart_outlined))
+                    icon: badges.Badge(
+                      position: badges.BadgePosition.topEnd(top: -14, end: -12),
+                      badgeStyle: const badges.BadgeStyle(
+                        elevation: 4,
+                          shape: badges.BadgeShape.circle,
+                          badgeColor: Colors.red,
+                          padding: EdgeInsets.all(4),
+
+                      ),
+                      badgeContent: Text('${context.watch<NewShoesListProvider>().cartItems.length}'),
+                      child: const Icon(Icons.shopping_cart),
+                    ))
               ],
             ),
             const Text(

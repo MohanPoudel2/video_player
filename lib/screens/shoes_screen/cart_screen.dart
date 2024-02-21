@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +15,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  int _count = 1;
-
   @override
   Widget build(BuildContext context) {
     final cartProvider = context.watch<NewShoesListProvider>();
@@ -29,7 +25,7 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       body: Container(
           padding: const EdgeInsets.only(left: 10, top: 30, right: 10),
-          decoration: const BoxDecoration(
+          decoration:  const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/bg3.jpg'), fit: BoxFit.fill)),
           child: Column(
@@ -52,8 +48,10 @@ class _CartScreenState extends State<CartScreen> {
               ),
            
               if (cartItems.isEmpty)
-                const Center(
-                  child: Text('Nothing in the Cart'),
+                 const Expanded(
+                  child:Center(
+                    child: Text('Nothing to show here',style: TextStyles.tabText2,),
+                  )
                 ),
               if (cartItems.isNotEmpty)
                 Expanded(
@@ -61,7 +59,7 @@ class _CartScreenState extends State<CartScreen> {
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final selectedCart = cartItems[index];
-                    log(selectedCart.quantity.toString());
+                    int count=cartItems[index].quantity;
 
                     return Stack(
                       clipBehavior: Clip.none,
@@ -98,7 +96,7 @@ class _CartScreenState extends State<CartScreen> {
                                             fontSize: 20),
                                       ),
                                       Text(
-                                        '\$${selectedCart.price} * ${selectedCart.quantity} = ${selectedCart.price*selectedCart.quantity}',
+                                        '\$${selectedCart.price} * ${selectedCart.quantity} = ${selectedCart.price * selectedCart.quantity}',
                                         style: TextStyles.smallText,
                                       ),
                                     ],
@@ -109,20 +107,29 @@ class _CartScreenState extends State<CartScreen> {
                                   children: [
                                     IconButton(
                                         onPressed: () {
-                                          _onDecrement();
+                                         setState(() {
+                                           if (count > 1) {
+                                           cartProvider.addToCart(selectedCart, -1);
+                                           }
+
+
+                                         });
                                         },
                                         icon: const Icon(
                                           Icons.remove,
                                           size: 16,
                                         )),
                                     Text(
-                                      '$_count',
+                                      '$count',
                                       style: TextStyles.tabText2
                                           .copyWith(fontSize: 14),
                                     ),
                                     IconButton(
                                         onPressed: () {
-                                          _onIncrement();
+                                          setState(() {
+                                            cartProvider.addToCart(selectedCart, 1);
+
+                                          });
                                         },
                                         icon: const Icon(
                                           Icons.add,
@@ -157,6 +164,7 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                 ],
                                     shape: BoxShape.circle,
+                                  
                                   color:AppColors.bottomNev,
                                   image: DecorationImage(
                                     image: AssetImage('assets/cross.png'),
@@ -177,54 +185,16 @@ class _CartScreenState extends State<CartScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Items :',
-                    style: TextStyles.textButton2,
-                  ),
-                  Text(
-                    cartItems.length.toString(),
-                    style: TextStyles.textButton2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Delivery charge :',
-                    style: TextStyles.textButton2,
-                  ),
-                  Text(
-                    cartItems.isNotEmpty ? '\$$charge' : '\$0',
-                    style: TextStyles.textButton2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Sub Total :',
-                    style: TextStyles.textButton2,
-                  ),
-                  Text(
-                    '\$$totalSum',
-                    style: TextStyles.textButton2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
                     'Total :',
-                    style: TextStyles.mediumText,
+                    style: TextStyles.tabText2,
                   ),
                   Text(
-                    cartItems.isNotEmpty ? '\$${charge + totalSum}' : '\$0',
-                    style: TextStyles.mediumText,
+                      '${cartProvider.getTotalPrice()}',
+                    style: TextStyles.tabText2,
                   ),
                 ],
               ),
+
               GestureDetector(
                 onTap: () {
                   final cartProvider = context.read<NewShoesListProvider>();
@@ -280,7 +250,7 @@ class _CartScreenState extends State<CartScreen> {
                   }
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(top: 100, bottom: 20),
+                  margin: const EdgeInsets.only(top:20, bottom: 20),
                   height: 60,
                   width: 300,
                   decoration: BoxDecoration(
@@ -296,17 +266,17 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void _onIncrement() {
-    setState(() {
-      _count++;
-    });
-  }
-
-  void _onDecrement() {
-    setState(() {
-      if (_count > 1) {
-        _count--;
-      }
-    });
-  }
+  // void _onIncrement() {
+  //   setState(() {
+  //     _count++;
+  //   });
+  // }
+  //
+  // void _onDecrement() {
+  //   setState(() {
+  //     if (_count > 1) {
+  //       _count--;
+  //     }
+  //   });
+  // }
 }

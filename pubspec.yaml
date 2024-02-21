@@ -45,6 +45,8 @@ dependencies:
   sign_in_button: ^3.2.0
   shared_preferences: ^2.2.2
   giffy_dialog: ^2.0.0+2
+  badges: ^3.1.2
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
