@@ -47,6 +47,9 @@ dependencies:
   giffy_dialog: ^2.0.0+2
   badges: ^3.1.2
   shimmer: ^3.0.0
+  sqflite: ^2.3.2
+  path: ^1.8.3
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:

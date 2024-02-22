@@ -24,7 +24,7 @@ class AllCountryList {
     this.flag,
     this.regionalBlocs,
     this.cioc,
-    this.independent,});
+    this.independent, required id,});
 
   AllCountryList.fromJson(dynamic json) {
     name = json['name'];
